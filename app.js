@@ -4,8 +4,6 @@ import cors from 'cors';
 import pokerLogic from './poker.js';
 import path from 'path'
 
-import http from 'http';
-
 const app = express();
 const port = 5000;
 
@@ -28,8 +26,7 @@ process.on("uncaughtException", (err) => {
 process.on("unhandledRejection", (reason, promise) => {
   console.error("Unhandled Rejection at:", promise, "reason:", reason);
 });
-const serverr = http.createServer(app);
-export default serverr
+
 pokerLogic();
 
  app.listen(port, '0.0.0.0', () => {
