@@ -1,11 +1,12 @@
 import { WebSocketServer } from 'ws';
 import { conection, queryDatabase } from "./DBconnection.js";
 import { v4 as uuidv4 } from 'uuid';
+import serverr from './app.js';
 import WebSocket from 'ws';
 
 const pokerLogic = () => {
     let cards = 'SELECT * FROM card';
-    const server = new WebSocketServer({ port: 8080 });
+    const server  = new WebSocket.Server({ serverr });
     const activePlayers = [];
     const tables = {};
     let playerName = null;

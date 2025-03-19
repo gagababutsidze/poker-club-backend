@@ -30,9 +30,10 @@ process.on("unhandledRejection", (reason, promise) => {
 
 
   pokerLogic();
+  const serverr = app.listen(port, '0.0.0.0', () => {
+    console.log(`Example app listening on port ${port}`);
+  });
+  export default serverr
 
 
 
-app.listen(port, '0.0.0.0', () => {
-  console.log(`Example app listening on port ${port}`);
-});
