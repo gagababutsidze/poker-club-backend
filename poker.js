@@ -1,7 +1,6 @@
 import { WebSocketServer } from 'ws';
 import { conection, queryDatabase } from "./DBconnection.js";
 import { v4 as uuidv4 } from 'uuid';
-import { WebSocketServer } from 'ws';
 import serverr from './app.js';
 //import WebSocket from 'ws';
 
