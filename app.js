@@ -4,6 +4,7 @@ import { WebSocketServer } from 'ws';
 import userRouter from "./routes/users/user.js";
 import cors from 'cors';
 import path from 'path';
+import pokerLogic from './poker.js';
 
 
 const app = express();
@@ -21,7 +22,8 @@ app.get("/health", (req, res) => {
 
 // ✅ WebSocket-ის მიბმა HTTP სერვერზე
 const server = new WebSocketServer({ serverr });
-export default server
+
+pokerLogic(server)
 
 
 serverr.listen(port, '0.0.0.0', () => {

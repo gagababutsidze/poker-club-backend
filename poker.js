@@ -1,9 +1,9 @@
 //import { WebSocketServer } from 'ws';
 import { conection, queryDatabase } from "./DBconnection.js";
 import { v4 as uuidv4 } from 'uuid';
-import server from './app.js';
 
-const pokerLogic = () => {
+
+const pokerLogic = ( server ) => {
     let cards = 'SELECT * FROM card';
     const activePlayers = [];
     const tables = {};
