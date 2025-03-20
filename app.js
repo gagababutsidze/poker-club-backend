@@ -5,11 +5,9 @@ import userRouter from "./routes/users/user.js";
 import cors from 'cors';
 import path from 'path';
 import pokerLogic from './poker.js';
-import dotenv from "dotenv"
-dotenv.config()
 
 const app = express();
-const port = process.env.PORT || 5000; // Railway-ს პორტი
+const port = 5000; // Railway-ს პორტი
 const server = createServer(app); // HTTP სერვერი
 
 app.use(cors());
