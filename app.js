@@ -25,8 +25,9 @@ const wss = new WebSocketServer({ server });
 pokerLogic(wss); // ვაწვდით WebSocket სერვერს ლოგიკას
 
 // HTTP სერვერის გაშვება
-server.listen(port, '0.0.0.0', () => {
+server.listen(port, () => {
   console.log(`🚀 Server running on port ${port}`);
 });
+
 
 
