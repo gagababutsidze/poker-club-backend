@@ -6,10 +6,9 @@ import cors from 'cors';
 import path from 'path';
 import pokerLogic from './poker.js';
 
-
 const app = express();
-const port = process.env.PORT || 5000; // Railway ღიას ტოვებს მხოლოდ PORT-ს
-const serverr = createServer(app); // HTTP სერვერი Express-სთვის
+const port = process.env.PORT || 5000; // Railway-ს პორტი
+const server = createServer(app); // HTTP სერვერი
 
 app.use(cors());
 app.use(express.json());
@@ -21,14 +20,13 @@ app.get("/health", (req, res) => {
 });
 
 // ✅ WebSocket-ის მიბმა HTTP სერვერზე
-const server = new WebSocketServer({ serverr });
+const wss = new WebSocketServer({ server });
 
-pokerLogic(server)
+pokerLogic(wss); // ვაწვდით WebSocket სერვერს ლოგიკას
 
-
-serverr.listen(port, '0.0.0.0', () => {
+// HTTP სერვერის გაშვება
+server.listen(port, '0.0.0.0', () => {
   console.log(`🚀 Server running on port ${port}`);
 });
-
 
 

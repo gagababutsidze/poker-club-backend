@@ -3,7 +3,7 @@ import { conection, queryDatabase } from "./DBconnection.js";
 import { v4 as uuidv4 } from 'uuid';
 
 
-const pokerLogic = ( server ) => {
+const pokerLogic = ( wss ) => {
     let cards = 'SELECT * FROM card';
     const activePlayers = [];
     const tables = {};
@@ -53,7 +53,7 @@ const pokerLogic = ( server ) => {
         }
     }
 
-    server.on('connection', async (ws, req) => {
+    wss.on('connection', async (ws, req) => {
             console.log('client connected to /join path');
 
             ws.on('message', async (message) => {
