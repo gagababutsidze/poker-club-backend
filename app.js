@@ -10,7 +10,12 @@ const app = express();
 const port = 5000; // Railway-ს პორტი
 const server = createServer(app); // HTTP სერვერი
 
-app.use(cors());
+// ✅ დაამატე ეს CORS Middleware
+app.use(cors({
+  origin: ['https://poker-club-neon.vercel.app'], // შენი Frontend-ის დომენი
+  methods: 'GET,POST,PUT,DELETE',
+  allowedHeaders: 'Content-Type,Authorization'
+}));
 app.use(express.json());
 app.use("/api/", userRouter);
 app.use('/cards', express.static(path.join('cards')));
