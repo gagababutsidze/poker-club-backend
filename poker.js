@@ -108,34 +108,35 @@ const pokerLogic = ( wss ) => {
 
             }
         if (action === 'playGame') {
-     const tablePlayers = tables[tableId];
-     if (tablePlayers) {
-        if (!tables[tableId].dealerAssigned) {
-             dealerIndex = Math.floor(Math.random() * tablePlayers.players.length);
-            const dealer = tablePlayers.players[dealerIndex];
-            dealer.dealer = true;
-            tables[tableId].dealer = dealer;
-            tables[tableId].dealerAssigned = true;
-            tables[tableId].pot = pot;
-            tables[tableId].betToBeMade = betToBeMade
-            tables[tableId].currentBettingRound = 0
-            console.log("Dealer assigned to:", dealer.playerName);
-        }
- 
-        ws.send(JSON.stringify({
-            message: "users",
-            players: tablePlayers.players.map(p => ({
-                playerName: p.playerName,
-                playerCoin: p.coins,
-                image: p.image || 'https://example.com/default-avatar.jpg'
-            })),
-            dealer: tables[tableId].dealer.playerName,
-            pot: tables[tableId].pot,
+            setTimeout(() => {
+                const tablePlayers = tables[tableId];
+                if (tablePlayers) {
+                   if (!tables[tableId].dealerAssigned) {
+                        dealerIndex = Math.floor(Math.random() * tablePlayers.players.length);
+                       const dealer = tablePlayers.players[dealerIndex];
+                       dealer.dealer = true;
+                       tables[tableId].dealer = dealer;
+                       tables[tableId].dealerAssigned = true;
+                       tables[tableId].pot = pot;
+                       tables[tableId].betToBeMade = betToBeMade
+                       tables[tableId].currentBettingRound = 0
+                       console.log("Dealer assigned to:", dealer.playerName);
+                   }
+            
+                   ws.send(JSON.stringify({
+                       message: "users",
+                       players: tablePlayers.players.map(p => ({
+                           playerName: p.playerName,
+                           playerCoin: p.coins,
+                           image: p.image || 'https://example.com/default-avatar.jpg'
+                       })),
+                       dealer: tables[tableId].dealer.playerName,
+                       pot: tables[tableId].pot,
+                      
+                   }));
            
-        }));
-
-     }
- 
+                }
+            },2000) 
      }
 
 
