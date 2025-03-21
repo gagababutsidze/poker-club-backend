@@ -296,7 +296,7 @@ const pokerLogic = ( wss ) => {
             playerName: player.playerName,
             holeCards: player.holeCards
         }));
-    }, 1000)
+    }, 3000)
                 // ✅ Send cards only to the respective player
                 check =true
            
