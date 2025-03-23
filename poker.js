@@ -168,83 +168,86 @@ const pokerLogic = ( wss ) => {
 
         // Inside the 'set-blind' action
       if (action === 'set-blinds') {
-         const tablePlayers = tables[tableId];
+        setInterval( async ()  => {
+            const tablePlayers = tables[tableId];
 
-        // Validate table state
-        if (!tablePlayers || tablePlayers.players.length !== 4) {
-         console.log("Invalid table state or insufficient players.");
-         return;
-        }
-
-     // Update WebSocket reference for the current player
-     const playerEntry = tablePlayers.players.find(player => player.playerName === playerName);
-     let test = false
-     if (playerEntry) {
+            // Validate table state
+            if (!tablePlayers || tablePlayers.players.length !== 4) {
+             console.log("Invalid table state or insufficient players.");
+             return;
+            }
+    
+         // Update WebSocket reference for the current player
+         const playerEntry = tablePlayers.players.find(player => player.playerName === playerName);
+         let test = false
+         if (playerEntry) {
+       
+            test = true
+         }
+         if (test) {
+            if (tablePlayers.dealerAssigned && !tablePlayers.blindsSet) {
+                const dealerPlayer = tablePlayers.players.find(player => player.dealer === true);
+                if (!dealerPlayer) {
+                    console.log("No dealer assigned.");
+                    return;
+                }
+        
+                // Lock blinds to prevent duplicate actions
+                tablePlayers.blindsSet = true;
+        
+                // Calculate indexes for small blind and big blind players
+                dealerIndex = tablePlayers.players.indexOf(dealerPlayer);
+                const smallBlindIndex = (dealerIndex - 1 + tablePlayers.players.length) % tablePlayers.players.length;
+                const bigBlindIndex = (dealerIndex - 2 + tablePlayers.players.length) % tablePlayers.players.length;  // Second next player for big blind
+        
+                const smallBlindPlayer = tablePlayers.players[smallBlindIndex];
+                const bigBlindPlayer = tablePlayers.players[bigBlindIndex];
+        
+                try {
+                    // Assign blinds
+                    const smallBlindResult = await queryDatabase('SELECT * FROM users WHERE email = ?', smallBlindPlayer.playerName);
+                    const bigBlindResult = await queryDatabase('SELECT * FROM users WHERE email = ?', bigBlindPlayer.playerName);
+        
+                    if (smallBlindResult !== 0 && bigBlindResult !== 0) {
+                        console.log(`Small blind: ${smallBlindPlayer.playerName}, Big blind: ${bigBlindPlayer.playerName}`);
+                        
+                        smallBlindPlayer.coins =   smallBlindPlayer.coins - 10 ;
+                        bigBlindPlayer.coins =  bigBlindPlayer.coins -20;
+    
+                        console.log(smallBlindPlayer.coins,   bigBlindPlayer.coins);
+                        
+                        // Send blind assignments
+                        checkConnectionAndSend(smallBlindPlayer, { action: 'setSmallBlind', amount: 10 });
+                        checkConnectionAndSend(bigBlindPlayer, { action: 'setBigBlind', amount: 20 });
+    
+                        let smallBlindAmount = 10;
+    
+                        let bigBlindAmount = 20
+                        tablePlayers.betToBeMade = bigBlindAmount
+        
+                        // Update pot (only once after all validations pass)
+                        const blindAmount = smallBlindAmount + bigBlindAmount; // Small blind + Big blind
+                        tablePlayers.pot += blindAmount;
+                        console.log(`Pot updated to: ${pot}`);
+                        
+        
+                        // Broadcast updated pot
+                        broadcast(JSON.stringify({ action: "updatePot", pot: tablePlayers.pot  }));
+    
+                        console.log('pot have been sent');
+                        
+                    } else {
+                        console.log("Error finding blind players in the database.");
+                      }
+                } catch (error) {
+                    console.log("Error during blind assignment:", error);
+                }
+            } else if (tablePlayers.blindsSet) {
+                console.log("Blinds already set for this round.");
+            }
+         }
+        }, 2000)
    
-        test = true
-     }
-     if (test) {
-        if (tablePlayers.dealerAssigned && !tablePlayers.blindsSet) {
-            const dealerPlayer = tablePlayers.players.find(player => player.dealer === true);
-            if (!dealerPlayer) {
-                console.log("No dealer assigned.");
-                return;
-            }
-    
-            // Lock blinds to prevent duplicate actions
-            tablePlayers.blindsSet = true;
-    
-            // Calculate indexes for small blind and big blind players
-            dealerIndex = tablePlayers.players.indexOf(dealerPlayer);
-            const smallBlindIndex = (dealerIndex - 1 + tablePlayers.players.length) % tablePlayers.players.length;
-            const bigBlindIndex = (dealerIndex - 2 + tablePlayers.players.length) % tablePlayers.players.length;  // Second next player for big blind
-    
-            const smallBlindPlayer = tablePlayers.players[smallBlindIndex];
-            const bigBlindPlayer = tablePlayers.players[bigBlindIndex];
-    
-            try {
-                // Assign blinds
-                const smallBlindResult = await queryDatabase('SELECT * FROM users WHERE email = ?', smallBlindPlayer.playerName);
-                const bigBlindResult = await queryDatabase('SELECT * FROM users WHERE email = ?', bigBlindPlayer.playerName);
-    
-                if (smallBlindResult !== 0 && bigBlindResult !== 0) {
-                    console.log(`Small blind: ${smallBlindPlayer.playerName}, Big blind: ${bigBlindPlayer.playerName}`);
-                    
-                    smallBlindPlayer.coins =   smallBlindPlayer.coins - 10 ;
-                    bigBlindPlayer.coins =  bigBlindPlayer.coins -20;
-
-                    console.log(smallBlindPlayer.coins,   bigBlindPlayer.coins);
-                    
-                    // Send blind assignments
-                    checkConnectionAndSend(smallBlindPlayer, { action: 'setSmallBlind', amount: 10 });
-                    checkConnectionAndSend(bigBlindPlayer, { action: 'setBigBlind', amount: 20 });
-
-                    let smallBlindAmount = 10;
-
-                    let bigBlindAmount = 20
-                    tablePlayers.betToBeMade = bigBlindAmount
-    
-                    // Update pot (only once after all validations pass)
-                    const blindAmount = smallBlindAmount + bigBlindAmount; // Small blind + Big blind
-                    tablePlayers.pot += blindAmount;
-                    console.log(`Pot updated to: ${pot}`);
-                    
-    
-                    // Broadcast updated pot
-                    broadcast(JSON.stringify({ action: "updatePot", pot: tablePlayers.pot  }));
-
-                    console.log('pot have been sent');
-                    
-                } else {
-                    console.log("Error finding blind players in the database.");
-                  }
-            } catch (error) {
-                console.log("Error during blind assignment:", error);
-            }
-        } else if (tablePlayers.blindsSet) {
-            console.log("Blinds already set for this round.");
-        }
-     }
 
      // Ensure dealer is assigned and blinds are not already set
   
