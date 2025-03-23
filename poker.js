@@ -259,6 +259,8 @@ const pokerLogic = ( wss ) => {
         // ✅ Prevent multiple pre-flop triggers
         if (tablePlayers.currentBettingRound !== 0) {
             console.log("❌ Pre-flop already happened.");
+            console.log('current round', tableId , tablePlayers.currentBettingRound);
+            
             return;
         }
     
