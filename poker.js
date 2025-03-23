@@ -405,7 +405,7 @@ const pokerLogic = ( wss ) => {
             console.log(`🎲 Current Player: ${currentPlayer.playerName}`);
         
             // ვამოწმებთ, არის თუ არა მოთამაშე ონლაინ
-            if (currentPlayer.ws && currentPlayer.ws.readyState === WebSocket.OPEN) {
+            if (currentPlayer.ws ) {
                 currentPlayer.ws.send(JSON.stringify({
                     action: "yourTurn",
                     currentPlayer: currentPlayer.playerName,
