@@ -310,6 +310,8 @@ const pokerLogic = ( wss ) => {
     
             console.log("✅ Pre-flop cards have been sent to all players.");
             tablePlayers.currentBettingRound = 1;
+            console.log("current betting round",tablePlayers.currentBettingRound);
+            
             tablePlayers.preFlop = true // Move to first betting round
         } catch (error) {
             console.error("❌ Error during pre-flop:", error);
