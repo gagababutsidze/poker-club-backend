@@ -153,10 +153,10 @@ const pokerLogic = ( wss ) => {
                 return;
                 }
      
-                if (player.ws.readyState === WebSocket.OPEN) {
+                if (player.ws) {
                     player.ws.send(JSON.stringify({ action: 'set-small-blind' }));
                     console.log(`Message sent to ${player.playerName} for small blind assignment.`);
-                    } else if (player.ws.readyState === WebSocket.CLOSED) {
+                    } else if (!player.ws) {
              
                         console.log(`Connection to ${player.playerName} is closed. No more retries.`);
                  } else {
