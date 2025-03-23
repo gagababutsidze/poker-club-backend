@@ -123,7 +123,7 @@ const pokerLogic = ( wss ) => {
                     tables[tableId].pot = pot;
                     tables[tableId].betToBeMade = betToBeMade
                     tables[tableId].currentBettingRound = 0
-                    console.log("Dealer assigned to:", dealer.playerName);
+          
             
                    ws.send(JSON.stringify({
                        message: "users",
@@ -259,7 +259,7 @@ const pokerLogic = ( wss ) => {
         }
     
         // ✅ Prevent multiple pre-flop triggers
-        if (tablePlayers.currentBettingRound !== 0) {
+        if (tablePlayers.preFlop ) {
             console.log("❌ Pre-flop already happened.");
             console.log('current round', tableId , tablePlayers.currentBettingRound);
             
@@ -307,7 +307,8 @@ const pokerLogic = ( wss ) => {
             });
     
             console.log("✅ Pre-flop cards have been sent to all players.");
-            tablePlayers.currentBettingRound = 1; // Move to first betting round
+            tablePlayers.currentBettingRound = 1;
+            tablePlayers.preFlop = true // Move to first betting round
         } catch (error) {
             console.error("❌ Error during pre-flop:", error);
             ws.send(JSON.stringify({ message: "An error occurred while dealing cards." }));
