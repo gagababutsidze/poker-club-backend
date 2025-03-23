@@ -185,13 +185,14 @@ const pokerLogic = ( wss ) => {
             test = true
          }
          if (test) {
-            if (tablePlayers.dealerAssigned && !tablePlayers.blindsSet) {
+                if (tablePlayers.dealerAssigned && !tablePlayers.blindsSet) {
                 const dealerPlayer = tablePlayers.players.find(player => player.dealer === true);
                 if (!dealerPlayer) {
                     console.log("No dealer assigned.");
                     return;
                 }
-        
+                    console.log('blinds are setting');
+                    
                 // Lock blinds to prevent duplicate actions
                 tablePlayers.blindsSet = true;
         
@@ -242,9 +243,7 @@ const pokerLogic = ( wss ) => {
                 } catch (error) {
                     console.log("Error during blind assignment:", error);
                 }
-            } else if (tablePlayers.blindsSet) {
-                console.log("Blinds already set for this round.");
-            }
+            } 
          }
         }, 2000)
    
