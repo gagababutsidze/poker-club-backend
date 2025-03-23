@@ -117,11 +117,13 @@ const pokerLogic = ( wss ) => {
                        dealer.dealer = true;
                        tables[tableId].dealer = dealer;
                        tables[tableId].dealerAssigned = true;
-                       tables[tableId].pot = pot;
-                       tables[tableId].betToBeMade = betToBeMade
-                       tables[tableId].currentBettingRound = 0
-                       console.log("Dealer assigned to:", dealer.playerName);
+    
                    }
+
+                    tables[tableId].pot = pot;
+                    tables[tableId].betToBeMade = betToBeMade
+                    tables[tableId].currentBettingRound = 0
+                    console.log("Dealer assigned to:", dealer.playerName);
             
                    ws.send(JSON.stringify({
                        message: "users",
