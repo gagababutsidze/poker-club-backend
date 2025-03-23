@@ -441,6 +441,8 @@ const pokerLogic = ( wss ) => {
                             return
                             
                         }
+                        console.log('bet round' ,table.currentBettingRound);
+                        
                         handlePlayerAction(tableId, currentPlayer.playerName, "call", message);
                         console.log(`${currentPlayer.playerName} called.`);
                         processNextTurn(tableId);
