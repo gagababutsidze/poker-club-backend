@@ -122,7 +122,7 @@ const pokerLogic = ( wss ) => {
 
                     tables[tableId].pot = pot;
                     tables[tableId].betToBeMade = betToBeMade
-                    tables[tableId].currentBettingRound = 0
+                    tables[tableId].currentBettingRound = 1
           
             
                    ws.send(JSON.stringify({
