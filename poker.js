@@ -550,7 +550,7 @@ const pokerLogic = ( wss ) => {
 
             table.players.forEach((user) => {
 
-                    if (user.ws.readyState === WebSocket.OPEN) {
+                    if (user.ws) {
                         user.ws.send(JSON.stringify({
                             action: 'flop',
                             flopCards: table.commonCards
