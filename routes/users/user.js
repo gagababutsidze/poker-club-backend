@@ -65,7 +65,7 @@ userRouter.post('/login', async (req, res) => {
       const token = jwt.sign(userForToken, process.env.SECRET)
       res
       .status(200)
-      .send({ token,  username: found[0].username , email: found[0].email})
+      .send({ token,  username: found[0].username , email: found[0].email, id: found[0].id})
       console.log(found[0]);
    } catch (error) {
       res.json(error.name)
@@ -84,8 +84,8 @@ userRouter.get('/get', async (req, res) => {
 
 
 userRouter.get('/get/:id', async (req, res) => {
-
-   const id = req.params.id;
+   try {
+         const id = req.params.id;
 
    const sql = "SELECT * FROM users WHERE id = ?";
 
@@ -97,6 +97,12 @@ userRouter.get('/get/:id', async (req, res) => {
    }
 
    res.json(answer)
+      
+   } catch (error) {
+      console.log(error.message);
+      
+   }
+
  
 })
 
