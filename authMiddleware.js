@@ -1,8 +1,11 @@
 import jwt from "jsonwebtoken";
 
 const authMiddleware = (req, res, next) => {
-    const token = req.header("Authorization");
-    if (!token) return res.status(401).json({ message: "Access denied" });
+    const authHeader = req.header("Authorization");
+    if (!authHeader) return res.status(401).json({ message: "Access denied" });
+
+    const token = authHeader.split(" ")[1]; // 🔥 მოაშორე "Bearer"
+    if (!token) return res.status(401).json({ message: "No token provided" });
 
     try {
         const verified = jwt.verify(token, "SECRET");
@@ -12,5 +15,6 @@ const authMiddleware = (req, res, next) => {
         res.status(400).json({ message: "Invalid token" });
     }
 };
+
 
 export default authMiddleware;
