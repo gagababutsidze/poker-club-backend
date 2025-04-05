@@ -3,6 +3,7 @@ import { queryDatabase } from "../../DBconnection.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv"
+import authMiddleware from "../../authMiddleware.js";
 dotenv.config()
 
 const userRouter = express.Router();
@@ -83,7 +84,7 @@ userRouter.get('/get', async (req, res) => {
 })
 
 
-userRouter.get('/get/:id', async (req, res) => {
+userRouter.get('/get/:id', authMiddleware, async (req, res) => {
    try {
          const id = req.params.id;
 
