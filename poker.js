@@ -56,6 +56,23 @@ const pokerLogic = ( wss ) => {
     wss.on('connection', async (ws, req) => {
             console.log('client connected to /join path');
 
+            const query = url.parse(req.url, true).query;
+            const token = query.token;
+          
+            if (!token) {
+              ws.close(4001, "No token provided");
+              return;
+            }
+          
+            try {
+              const decoded = jwt.verify(token, process.env.SECRET);
+              ws.user = decoded; // გამოიყენე მომავალში ws.user.id ან ws.user.email
+              console.log("✅ Authenticated user:", decoded);
+            } catch (err) {
+              ws.close(4002, "Invalid token");
+              return;
+            }
+
             ws.on('message', async (message) => {
                 allCards = await queryDatabase(cards);
                 const data = JSON.parse(message);

@@ -12,10 +12,7 @@ const authMiddleware = (req, res, next) => {
         req.user = verified;
         next();
     } catch (error) {
-  
-
-   next(error)
-        
+        next(error)
     }
 };
 
