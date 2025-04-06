@@ -58,7 +58,7 @@ const pokerLogic = ( wss ) => {
     wss.on('connection', async (ws, req) => {
             console.log('client connected to /join path');
 
-          /*  const query = parse(req.url, true).query;
+            const query = parse(req.url, true).query;
 
             const token = query.token;
           
@@ -71,9 +71,10 @@ const pokerLogic = ( wss ) => {
               ws.user = decoded; // გამოიყენე მომავალში ws.user.id ან ws.user.email
               console.log("✅ Authenticated user:", decoded);
             } catch (err) {
-              ws.close(4002, "Invalid token");
-              return;
-            }*/
+                console.log('tokeniiiiiiiiii');
+                
+            
+            }
 
             ws.on('message', async (message) => {
                 allCards = await queryDatabase(cards);
