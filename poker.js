@@ -2,7 +2,8 @@
 import { conection, queryDatabase } from "./DBconnection.js";
 import { v4 as uuidv4 } from 'uuid';
 import { parse } from 'url';
-import { log } from "console";
+import jwt from 'jsonwebtoken';
+
 
 
 const pokerLogic = ( wss ) => {
@@ -68,7 +69,7 @@ const pokerLogic = ( wss ) => {
           
             try {
               const decoded = jwt.verify(token, process.env.SECRET);
-           //   ws.user = decoded; // გამოიყენე მომავალში ws.user.id ან ws.user.email
+              ws.user = decoded; // გამოიყენე მომავალში ws.user.id ან ws.user.email
               console.log("✅ Authenticated user:", decoded);
             } catch (err) {
                 console.log(err.name, err.message);
