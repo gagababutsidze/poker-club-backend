@@ -1,6 +1,7 @@
 //import { WebSocketServer } from 'ws';
 import { conection, queryDatabase } from "./DBconnection.js";
 import { v4 as uuidv4 } from 'uuid';
+import { parse } from 'url';
 
 
 const pokerLogic = ( wss ) => {
@@ -56,7 +57,8 @@ const pokerLogic = ( wss ) => {
     wss.on('connection', async (ws, req) => {
             console.log('client connected to /join path');
 
-            const query = url.parse(req.url, true).query;
+            const query = parse(req.url, true).query;
+
             const token = query.token;
           
             if (!token) {
