@@ -71,7 +71,7 @@ const pokerLogic = ( wss ) => {
               ws.user = decoded; // გამოიყენე მომავალში ws.user.id ან ws.user.email
               console.log("✅ Authenticated user:", decoded);
             } catch (err) {
-                console.log('tokeniiiiiiiiii');
+                console.log(err.name, err.message);
                 
             
             }
