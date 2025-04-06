@@ -2,6 +2,7 @@
 import { conection, queryDatabase } from "./DBconnection.js";
 import { v4 as uuidv4 } from 'uuid';
 import { parse } from 'url';
+import { log } from "console";
 
 
 const pokerLogic = ( wss ) => {
@@ -62,6 +63,8 @@ const pokerLogic = ( wss ) => {
             const token = query.token;
           
             if (!token) {
+                console.log('ar aris tokeni');
+                
               ws.close(4001, "No token provided");
               return;
             }
