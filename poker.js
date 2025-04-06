@@ -64,9 +64,6 @@ const pokerLogic = ( wss ) => {
           
             if (!token) {
                 console.log('ar aris tokeni');
-                
-              ws.close(4001, "No token provided");
-              return;
             }
           
             try {
