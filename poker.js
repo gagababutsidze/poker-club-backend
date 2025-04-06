@@ -58,7 +58,7 @@ const pokerLogic = ( wss ) => {
     wss.on('connection', async (ws, req) => {
             console.log('client connected to /join path');
 
-            const query = parse(req.url, true).query;
+          /*  const query = parse(req.url, true).query;
 
             const token = query.token;
           
@@ -73,7 +73,7 @@ const pokerLogic = ( wss ) => {
             } catch (err) {
               ws.close(4002, "Invalid token");
               return;
-            }
+            }*/
 
             ws.on('message', async (message) => {
                 allCards = await queryDatabase(cards);
