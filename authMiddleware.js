@@ -14,16 +14,7 @@ const authMiddleware = (req, res, next) => {
     } catch (error) {
   
 
-        if (error.name === 'JsonWebTokenError') {
-            res.status(400).json({error: 'token is invalid'})
-            console.log('invalid token');
-            
-        }
-
-        else{
-            res.status(400).json({  error: error.message });
-            console.log(error.name, error.message);
-        }
+   next(error)
         
     }
 };

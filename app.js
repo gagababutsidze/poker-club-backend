@@ -5,6 +5,7 @@ import userRouter from "./routes/users/user.js";
 import cors from 'cors';
 import path from 'path';
 import pokerLogic from './poker.js';
+import errorhendler from "./error.js";
 
 const app = express();
 const port = 5000; // Railway-ს პორტი
@@ -19,6 +20,8 @@ app.use(cors({
 app.use(express.json());
 app.use("/api/", userRouter);
 app.use('/cards', express.static(path.join('cards')));
+app.use(errorhendler);
+
 
 app.get("/health", (req, res) => {
   res.send("✅ Server is running!");
