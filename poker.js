@@ -107,7 +107,11 @@ const pokerLogic = ( wss ) => {
                         assignTable();
    
                     } else {
-                        ws.send(JSON.stringify({ message: "Waiting for more players...", players: activePlayers }));
+                        ws.send(JSON.stringify({ message: "Waiting for more players..." }));
+                        for (let i = 0; i < activePlayers.length; i++) {
+                            activePlayers[i].ws.send(JSON.stringify({players: activePlayers }))
+                            
+                        }
                     }
                 }
 
