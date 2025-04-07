@@ -77,6 +77,11 @@ const pokerLogic = ( wss ) => {
             
             }
 
+            for (let i = 0; i < activePlayers.length; i++) {
+                activePlayers[i].ws.send(JSON.stringify({activePlayers: activePlayers }))
+                
+            }
+
             ws.on('message', async (message) => {
                 allCards = await queryDatabase(cards);
                 const data = JSON.parse(message);
