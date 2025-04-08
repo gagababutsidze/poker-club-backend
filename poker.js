@@ -98,7 +98,7 @@ const pokerLogic = ( wss ) => {
                     if (!findUser || findUser.length === 0) {
                         return ws.send(JSON.stringify({ error: "Invalid user" }));
                     }
-                    activePlayers.push({ 
+                    let test = activePlayers.push({ 
                         ws,
                          playerName: findUser[0].email, 
                          coins: cents, 
@@ -107,6 +107,13 @@ const pokerLogic = ( wss ) => {
                           hasBeenActed : false,
                           moveIsMade: false
                     });
+                    if (test) {
+                        
+            for (let i = 0; i < activePlayers.length; i++) {
+                activePlayers[i].ws.send(JSON.stringify({activePlayers: activePlayers }))
+                
+            }
+                    }
             
                     if (activePlayers.length >= 4) {
                         assignTable();
