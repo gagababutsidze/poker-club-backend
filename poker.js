@@ -1,8 +1,8 @@
-//import { WebSocketServer } from 'ws';
 import { conection, queryDatabase } from "./DBconnection.js";
 import { v4 as uuidv4 } from 'uuid';
 import { parse } from 'url';
 import jwt from 'jsonwebtoken';
+import { error } from "console";
 
 
 
@@ -64,7 +64,7 @@ const pokerLogic = ( wss ) => {
             const token = query.token;
           
             if (!token) {
-                console.log('ar aris tokeni');
+                ws.send(JSON.stringify({error: 'token is missing!'}))
             }
           
             try {
@@ -81,6 +81,8 @@ const pokerLogic = ( wss ) => {
                 activePlayers[i].ws.send(JSON.stringify({activePlayers: activePlayers }))
                 
             }
+
+        
 
             ws.on('message', async (message) => {
                 allCards = await queryDatabase(cards);
@@ -107,12 +109,12 @@ const pokerLogic = ( wss ) => {
                           hasBeenActed : false,
                           moveIsMade: false
                     });
-                    if (test) {
+                
                         
             for (let i = 0; i < activePlayers.length; i++) {
                 activePlayers[i].ws.send(JSON.stringify({activePlayers: activePlayers }))
                 
-            }
+            
                     }
             
                     if (activePlayers.length >= 4) {
