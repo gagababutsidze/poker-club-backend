@@ -76,10 +76,18 @@ const pokerLogic = ( wss ) => {
                 
             
             }
+       
 
             for (let i = 0; i < activePlayers.length; i++) {
-                activePlayers[i].ws.send(JSON.stringify({activePlayers: activePlayers }))
+                     if (activePlayers[i].ws) {
+                    activePlayers[i].ws.send(JSON.stringify({activePlayers: activePlayers }))
                 console.log('sent');
+            }
+            else{
+                console.log('there is no ws');
+                
+            }
+          
                 
                 
             }
