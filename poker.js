@@ -19,7 +19,7 @@ const pokerLogic = ( wss ) => {
  
     function assignTable() {
 
-     /*   const playerNames = new Set();
+        const playerNames = new Set();
 
         while (selectedPlayers.length < 4 && activePlayers.length > 0) {
             const randomIndex = Math.floor(Math.random() * activePlayers.length);
@@ -30,7 +30,7 @@ const pokerLogic = ( wss ) => {
                 playerNames.add(player.playerName);
             }
         }
-*/
+
         if (selectedPlayers.length === 4) {
             const newTableId = uuidv4();
             tables[newTableId] = {
@@ -75,18 +75,7 @@ const pokerLogic = ( wss ) => {
             
             }
 
-            const playerNames = new Set();
-
-            while (selectedPlayers.length < 4 && activePlayers.length > 0) {
-                const randomIndex = Math.floor(Math.random() * activePlayers.length);
-                const player = activePlayers.splice(randomIndex, 1)[0];
-    
-                if (player && player.ws && !playerNames.has(player.playerName)) {
-                    selectedPlayers.push(player);
-                    playerNames.add(player.playerName);
-                }
-            }
-    
+           
        
 
             for (let i = 0; i < activePlayers.length; i++) {
