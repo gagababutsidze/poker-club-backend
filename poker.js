@@ -60,6 +60,7 @@ const pokerLogic = ( wss ) => {
             const query = parse(req.url, true).query;
 
             const token = query.token;
+            const playername = query.playername
           
             if (!token) {
                 ws.send(JSON.stringify({error: 'token is missing!'}))
@@ -75,36 +76,10 @@ const pokerLogic = ( wss ) => {
             
             }
 
-           
-       
 
-            for (let i = 0; i < activePlayers.length; i++) {
-                     if (activePlayers[i].ws) {
-                    activePlayers[i].ws.send(JSON.stringify({activePlayers: selectedPlayers }))
-                    console.log('sent');
-                    }
-                else{
-                    console.log('there is no ws');
-                
-                }
-
-            }
-
-        
-
-            ws.on('message', async (message) => {
-                allCards = await queryDatabase(cards);
-                const data = JSON.parse(message);
-                const { action, tableId } = data;
-                playerName = data.playerName;
-               const broadcast = (message) => {
-             tables[tableId].players.forEach((user) => {
-             user.ws.send(message)
-              })
-             }
-                const usersQuery = 'SELECT * FROM users WHERE email = ?';
-                if (action === 'joinGame') {
-                    const findUser = await queryDatabase(usersQuery, [playerName]);
+            const usersQuery = 'SELECT * FROM users WHERE email = ?';
+         
+                    const findUser = await queryDatabase(usersQuery, playername);
                     if (!findUser || findUser.length === 0) {
                         return ws.send(JSON.stringify({ error: "Invalid user" }));
                     }
@@ -117,7 +92,36 @@ const pokerLogic = ( wss ) => {
                           hasBeenActed : false,
                           moveIsMade: false
                     });
+
+                                 
+            for (let i = 0; i < activePlayers.length; i++) {
+                activePlayers[i].ws.send(JSON.stringify({activePlayers: selectedPlayers }))
                 
+                
+        
+
+            ws.on('message', async (message) => {
+                allCards = await queryDatabase(cards);
+                const data = JSON.parse(message);
+                const { action, tableId } = data;
+                playerName = data.playerName;
+         
+                const usersQuery = 'SELECT * FROM users WHERE email = ?';
+                if (action === 'joinGame') {
+               /*     const findUser = await queryDatabase(usersQuery, [playerName]);
+                    if (!findUser || findUser.length === 0) {
+                        return ws.send(JSON.stringify({ error: "Invalid user" }));
+                    }
+                    let test = activePlayers.push({ 
+                        ws,
+                         playerName: findUser[0].email, 
+                         coins: cents, 
+                         image: findUser[0].img,
+                          active: true ,
+                          hasBeenActed : false,
+                          moveIsMade: false
+                    });
+                */
                         
             for (let i = 0; i < activePlayers.length; i++) {
                 activePlayers[i].ws.send(JSON.stringify({activePlayers: selectedPlayers }))
