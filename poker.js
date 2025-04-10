@@ -2,8 +2,6 @@ import { conection, queryDatabase } from "./DBconnection.js";
 import { v4 as uuidv4 } from 'uuid';
 import { parse } from 'url';
 import jwt from 'jsonwebtoken';
-import { error } from "console";
-
 
 
 const pokerLogic = ( wss ) => {
@@ -21,7 +19,7 @@ const pokerLogic = ( wss ) => {
  
     function assignTable() {
 
-        const playerNames = new Set();
+     /*   const playerNames = new Set();
 
         while (selectedPlayers.length < 4 && activePlayers.length > 0) {
             const randomIndex = Math.floor(Math.random() * activePlayers.length);
@@ -32,7 +30,7 @@ const pokerLogic = ( wss ) => {
                 playerNames.add(player.playerName);
             }
         }
-
+*/
         if (selectedPlayers.length === 4) {
             const newTableId = uuidv4();
             tables[newTableId] = {
@@ -76,20 +74,31 @@ const pokerLogic = ( wss ) => {
                 
             
             }
+
+            const playerNames = new Set();
+
+            while (selectedPlayers.length < 4 && activePlayers.length > 0) {
+                const randomIndex = Math.floor(Math.random() * activePlayers.length);
+                const player = activePlayers.splice(randomIndex, 1)[0];
+    
+                if (player && player.ws && !playerNames.has(player.playerName)) {
+                    selectedPlayers.push(player);
+                    playerNames.add(player.playerName);
+                }
+            }
+    
        
 
             for (let i = 0; i < activePlayers.length; i++) {
                      if (activePlayers[i].ws) {
-                    activePlayers[i].ws.send(JSON.stringify({activePlayers: activePlayers }))
-                console.log('sent');
-            }
-            else{
-                console.log('there is no ws');
+                    activePlayers[i].ws.send(JSON.stringify({activePlayers: selectedPlayers }))
+                    console.log('sent');
+                    }
+                else{
+                    console.log('there is no ws');
                 
-            }
-          
-                
-                
+                }
+
             }
 
         
@@ -122,7 +131,7 @@ const pokerLogic = ( wss ) => {
                 
                         
             for (let i = 0; i < activePlayers.length; i++) {
-                activePlayers[i].ws.send(JSON.stringify({activePlayers: activePlayers }))
+                activePlayers[i].ws.send(JSON.stringify({activePlayers: selectedPlayers }))
                 
             
                     }
