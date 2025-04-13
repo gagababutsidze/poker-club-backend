@@ -49,6 +49,11 @@ const pokerLogic = ( wss ) => {
                 }));
             });
             selectedPlayers = [];
+                                   
+            for (let i = 0; i < activePlayers.length; i++) {
+                activePlayers[i].ws.send(JSON.stringify({activePlayers: selectedPlayers }))
+             }
+            
         } else {
             console.error("Not enough unique players to form a table.");
         }
@@ -58,9 +63,7 @@ const pokerLogic = ( wss ) => {
             console.log('client connected to /join path');
 
             const query = parse(req.url, true).query;
-            const playername = parse(req.url, true).playername;
-
-      
+            const playername = query.playername
 
             const token = query.token;
            
