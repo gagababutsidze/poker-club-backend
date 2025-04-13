@@ -140,16 +140,13 @@ const pokerLogic = ( wss ) => {
                     console.log('hello');
                     
                     const actualPlayer =  selectedPlayers.findIndex(player => player.playerName === playerName);
-                    if (actualPlayer) {
+                   
                         selectedPlayers.splice(actualPlayer, 1)
                         for (let i = 0; i < activePlayers.length; i++) {
                             activePlayers[i].ws.send(JSON.stringify({activePlayers: selectedPlayers }))
                         }
-                    }
-                    else{
-                        console.log(selectedPlayers);
-                        
-                    }
+                    
+                  
                 }
 
          })
