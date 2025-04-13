@@ -137,6 +137,8 @@ const pokerLogic = ( wss ) => {
 
 
                 if (action === 'leave-line') {
+                    console.log('hello');
+                    
                     const actualPlayer =  selectedPlayers.findIndex(player => player.playerName === playerName);
                     if (actualPlayer) {
                         selectedPlayers.splice(actualPlayer, 1)
