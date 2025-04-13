@@ -49,10 +49,12 @@ const pokerLogic = ( wss ) => {
                 }));
             });
             selectedPlayers = [];
-                                   
-            for (let i = 0; i < activePlayers.length; i++) {
-                activePlayers[i].ws.send(JSON.stringify({activePlayers: selectedPlayers }))
-             }
+              setTimeout(() => {
+                for (let i = 0; i < activePlayers.length; i++) {
+                    activePlayers[i].ws.send(JSON.stringify({activePlayers: selectedPlayers }))
+                 }
+              }, 1000)                     
+           
             
         } else {
             console.error("Not enough unique players to form a table.");
