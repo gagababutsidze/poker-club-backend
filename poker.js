@@ -146,6 +146,10 @@ const pokerLogic = ( wss ) => {
                             activePlayers[i].ws.send(JSON.stringify({activePlayers: selectedPlayers }))
                         }
                     }
+                    else{
+                        console.log(selectedPlayers);
+                        
+                    }
                 }
 
          })
