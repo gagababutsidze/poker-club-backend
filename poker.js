@@ -109,7 +109,14 @@ const pokerLogic = ( wss ) => {
                     if (!findUser || findUser.length === 0) {
                         return ws.send(JSON.stringify({ error: "Invalid user" }));
                     }
-                    let test = selectedPlayers.push({ 
+                    const newPlayer =  selectedPlayers.find(player => player.playerName === playerName);
+                    if (newPlayer) {
+                        console.log('this player already in selected players!');
+                        return
+                    }
+
+
+                     selectedPlayers.push({ 
                         ws,
                          playerName: findUser[0].email, 
                          coins: cents, 
