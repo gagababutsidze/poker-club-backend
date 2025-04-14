@@ -468,7 +468,7 @@ const pokerLogic = ( wss ) => {
         
             // დავადგენთ, ვინ არის ამჟამინდელი მოთამაშე
             if (!table.currentTurnIndex && table.currentTurnIndex !== 0) {
-                table.currentTurnIndex = (dealerIndex - 3 + table.players.length) % table.players.length;
+                table.currentTurnIndex = (dealerIndex&&dealerIndex - 3 + table.players.length) % table.players.length;
             }
         
             let currentPlayer = table.players[table.currentTurnIndex];
