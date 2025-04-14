@@ -591,7 +591,9 @@ const pokerLogic = ( wss ) => {
         }
 
          if (check) {
-            managePlayerSequence(tableId);          
+            setTimeout(() => {
+                managePlayerSequence(tableId);    
+            }, 1000) 
          }
 
         async function flop(tableId) {
