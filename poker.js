@@ -467,7 +467,7 @@ const pokerLogic = ( wss ) => {
             console.log(`🧑‍💻 Active Players: ${table.players.filter(p => !p.moveIsMade).length}`);
         
             // დავადგენთ, ვინ არის ამჟამინდელი მოთამაშე
-            if (!table.currentTurnIndex && table.currentTurnIndex !== 0) {
+            if (!table.currentTurnIndex ) {
                 table.currentTurnIndex = (dealerIndex&&dealerIndex - 3 + table.players.length) % table.players.length;
             }
         
