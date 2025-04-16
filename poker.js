@@ -463,17 +463,20 @@ const pokerLogic = ( wss ) => {
                 return;
             }
         
-            console.log(`👉 Current Turn Index: ${table.currentTurnIndex}`);
-            console.log(`🧑‍💻 Active Players: ${table.players.filter(p => !p.moveIsMade).length}`);
-        
             // დავადგენთ, ვინ არის ამჟამინდელი მოთამაშე
             if (!table.currentTurnIndex ) {
                 table.currentTurnIndex = (table.dealerIndex - 3 + table.players.length) % table.players.length;
             }
+
+            console.log('dilers indeqsi' + table.dealerIndex);
+            
         
             let currentPlayer = table.players[table.currentTurnIndex];
             console.log(`🎲 Current Player: ${currentPlayer}`);
             console.log(`🎲 dealer index: ${table.dealerIndex}`);
+            
+            console.log(`👉 Current Turn Index: ${table.currentTurnIndex}`);
+            console.log(`🧑‍💻 Active Players: ${table.players.filter(p => !p.moveIsMade).length}`);
         
             // ვამოწმებთ, არის თუ არა მოთამაშე ონლაინ
             if (currentPlayer.ws ) {
