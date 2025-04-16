@@ -179,6 +179,8 @@ const pokerLogic = ( wss ) => {
                 if (tablePlayers) {
                    if (!tables[tableId].dealerAssigned) {
                         tablePlayers.dealerIndex =  Math.floor(Math.random() * tablePlayers.players.length);
+                        console.log(' tablePlayers.dealerIndex' +tablePlayers.dealerIndex);
+                        
                        const dealer = tablePlayers.players[tablePlayers.dealerIndex];
                        dealer.dealer = true;
                        tables[tableId].dealer = dealer;
