@@ -472,7 +472,7 @@ const pokerLogic = ( wss ) => {
             }
         
             let currentPlayer = table.players[table.currentTurnIndex];
-            console.log(`🎲 Current Player: ${currentPlayer.playerName}`);
+            console.log(`🎲 Current Player: ${currentPlayer}`);
             console.log(`🎲 dealer index: ${table.dealerIndex}`);
         
             // ვამოწმებთ, არის თუ არა მოთამაშე ონლაინ
