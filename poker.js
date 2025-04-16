@@ -313,7 +313,7 @@ const pokerLogic = ( wss ) => {
                 }
             } 
          }
-        }, 2000)
+        }, 1000)
    
 
      // Ensure dealer is assigned and blinds are not already set
