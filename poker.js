@@ -178,8 +178,8 @@ const pokerLogic = ( wss ) => {
                 const tablePlayers = tables[tableId];
                 if (tablePlayers) {
                    if (!tables[tableId].dealerAssigned) {
-                        dealerIndex = Math.floor(Math.random() * tablePlayers.players.length);
-                       const dealer = tablePlayers.players[dealerIndex];
+                        tablePlayers.dealerIndex =  Math.floor(Math.random() * tablePlayers.players.length);
+                       const dealer = tablePlayers.players[tablePlayers.dealerIndex];
                        dealer.dealer = true;
                        tables[tableId].dealer = dealer;
                        tables[tableId].dealerAssigned = true;
@@ -263,9 +263,9 @@ const pokerLogic = ( wss ) => {
                 tablePlayers.blindsSet = true;
         
                 // Calculate indexes for small blind and big blind players
-                dealerIndex = tablePlayers.players.indexOf(dealerPlayer);
-                const smallBlindIndex = (dealerIndex - 1 + tablePlayers.players.length) % tablePlayers.players.length;
-                const bigBlindIndex = (dealerIndex - 2 + tablePlayers.players.length) % tablePlayers.players.length;  // Second next player for big blind
+                tablePlayers.dealerIndex = tablePlayers.players.indexOf(dealerPlayer);
+                const smallBlindIndex = (tablePlayers.dealerIndex - 1 + tablePlayers.players.length) % tablePlayers.players.length;
+                const bigBlindIndex = (tablePlayers.dealerIndex - 2 + tablePlayers.players.length) % tablePlayers.players.length;  // Second next player for big blind
         
                 const smallBlindPlayer = tablePlayers.players[smallBlindIndex];
                 const bigBlindPlayer = tablePlayers.players[bigBlindIndex];
@@ -468,12 +468,12 @@ const pokerLogic = ( wss ) => {
         
             // დავადგენთ, ვინ არის ამჟამინდელი მოთამაშე
             if (!table.currentTurnIndex ) {
-                table.currentTurnIndex = (dealerIndex&&dealerIndex - 3 + table.players.length) % table.players.length;
+                table.currentTurnIndex = (table.dealerIndex - 3 + table.players.length) % table.players.length;
             }
         
             let currentPlayer = table.players[table.currentTurnIndex];
             console.log(`🎲 Current Player: ${currentPlayer.playerName}`);
-            console.log(`🎲 dealer index: ${dealerIndex}`);
+            console.log(`🎲 dealer index: ${table.dealerIndex}`);
         
             // ვამოწმებთ, არის თუ არა მოთამაშე ონლაინ
             if (currentPlayer.ws ) {
