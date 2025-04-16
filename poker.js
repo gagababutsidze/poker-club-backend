@@ -511,7 +511,7 @@ const pokerLogic = ( wss ) => {
                     if (message.action === "call") {
                         if (table.betToBeMade === 0) {
                             console.log('you cant call ');
-                            managePlayerSequence(tableId)
+                            processNextTurn(tableId)
                             return
                             
                         }
