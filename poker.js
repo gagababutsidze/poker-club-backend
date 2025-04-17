@@ -592,7 +592,7 @@ const pokerLogic = ( wss ) => {
         function processNextTurn(tableId) {
             const table = tables[tableId];
         
-            function nextTurn() {
+          /*  function nextTurn() {
                 let found = false;
         
                 for (let i = 1; i <= table.players.length; i++) {
@@ -613,7 +613,12 @@ const pokerLogic = ( wss ) => {
                 }
             }
         
-            setImmediate(nextTurn);
+            setImmediate(nextTurn);*/
+        
+            do {
+                (table.currentTurnIndex - 1 + table.players.length) % table.players.length;
+            } while (!table.players[table.currentTurnIndex].active || table.players[table.currentTurnIndex].moveIsMade);
+        
         }
         
 
