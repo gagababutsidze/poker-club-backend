@@ -618,6 +618,8 @@ const pokerLogic = ( wss ) => {
             do {
                 (table.currentTurnIndex - 1 + table.players.length) % table.players.length;
             } while (!table.players[table.currentTurnIndex].active || table.players[table.currentTurnIndex].moveIsMade);
+
+            managePlayerSequence(tableId)
         
         }
         
