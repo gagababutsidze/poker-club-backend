@@ -522,21 +522,23 @@ const pokerLogic = ( wss ) => {
                         console.log('bet round' ,table.currentBettingRound);
                         
                         handlePlayerAction(tableId, currentPlayer.playerName, "call", message).then(() => {
-                            processNextTurn(tableId)
+                           managePlayerSequence(tableId)
                            });;
                         console.log(`${currentPlayer.playerName} called.`);
     
                     } 
                     else if (message.action === "fold") {
                   handlePlayerAction(tableId, currentPlayer.playerName, "fold", message).then(() => {
-                    processNextTurn(tableId)
+                   // processNextTurn(tableId)
+                   managePlayerSequence(tableId)
                    });;
                         console.log(`${currentPlayer.playerName} folded.`);
          
                     } 
                     else if (message.action === "raise") {
                      handlePlayerAction(tableId, currentPlayer.playerName, "raise", message).then(() => {
-                        processNextTurn(tableId)
+                        //processNextTurn(tableId)
+                        managePlayerSequence(tableId)
                        });;
                         console.log(`${currentPlayer.playerName} raised.`);
                       
@@ -545,7 +547,8 @@ const pokerLogic = ( wss ) => {
                     else if (message.action === 'check') {
                         if (table.betToBeMade === 0) {
                            handlePlayerAction(tableId, currentPlayer.playerName, "check", message).then(() => {
-                            processNextTurn(tableId)
+                           // processNextTurn(tableId)
+                           managePlayerSequence(tableId)
                            });
            
                         
@@ -586,8 +589,17 @@ const pokerLogic = ( wss ) => {
                         console.log(`🏆 Winner is: ${winner.playerName}`);
                         return;
                     }
+
+                    do {
+                        (table.currentTurnIndex - 1 + table.players.length) % table.players.length;
+                    } while (!table.players[table.currentTurnIndex].active || table.players[table.currentTurnIndex].moveIsMade);
+        
+                    managePlayerSequence(tableId)
                 });
+            
             }
+
+       
         }
         function processNextTurn(tableId) {
             const table = tables[tableId];
