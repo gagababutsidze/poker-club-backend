@@ -396,7 +396,7 @@ const pokerLogic = ( wss ) => {
 
 
 
-        const handlePlayerAction = (tableId, playerName, action, message) => {
+        async function handlePlayerAction  (tableId, playerName, action, message)  {
             const tablePlayers = tables[tableId];
           
             
@@ -517,30 +517,37 @@ const pokerLogic = ( wss ) => {
                                 message: "It's your turn to choose an action.",
                                 options: ["call", "fold", "raise"]
                             }));
-                         //    return
-                            
+                             return   
                         }
                         console.log('bet round' ,table.currentBettingRound);
                         
-                        handlePlayerAction(tableId, currentPlayer.playerName, "call", message);
+                        handlePlayerAction(tableId, currentPlayer.playerName, "call", message).then(() => {
+                            processNextTurn(tableId)
+                           });;
                         console.log(`${currentPlayer.playerName} called.`);
-                        processNextTurn(tableId);
+    
                     } 
                     else if (message.action === "fold") {
-                        handlePlayerAction(tableId, currentPlayer.playerName, "fold", message);
+                  handlePlayerAction(tableId, currentPlayer.playerName, "fold", message).then(() => {
+                    processNextTurn(tableId)
+                   });;
                         console.log(`${currentPlayer.playerName} folded.`);
-                        processNextTurn(tableId);
+         
                     } 
                     else if (message.action === "raise") {
-                        handlePlayerAction(tableId, currentPlayer.playerName, "raise", message);
+                     handlePlayerAction(tableId, currentPlayer.playerName, "raise", message).then(() => {
+                        processNextTurn(tableId)
+                       });;
                         console.log(`${currentPlayer.playerName} raised.`);
-                        processNextTurn(tableId);
+                      
                     }
 
                     else if (message.action === 'check') {
                         if (table.betToBeMade === 0) {
-                            handlePlayerAction(tableId, currentPlayer.playerName, "check", message);
-                           processNextTurn(tableId)
+                           handlePlayerAction(tableId, currentPlayer.playerName, "check", message).then(() => {
+                            processNextTurn(tableId)
+                           });
+           
                         
                         }
                         else{
