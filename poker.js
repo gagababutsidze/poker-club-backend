@@ -469,10 +469,17 @@ const pokerLogic = ( wss ) => {
                 table.currentTurnIndex = (table.dealerIndex - 3 + table.players.length) % table.players.length;
             }
         
+            console.log('dilers indeqsi ' + table.dealerIndex);
+        
             let currentPlayer = table.players[table.currentTurnIndex];
         
+            console.log(`🎲 Current Player: ${currentPlayer}`);
+            console.log(`🎲 dealer index: ${table.dealerIndex}`);
+            console.log(`👉 Current Turn Index: ${table.currentTurnIndex}`);
+            console.log(`🧑‍💻 Active Players: ${table.players.filter(p => !p.moveIsMade).length}`);
+        
             if (!currentPlayer || !currentPlayer.ws) {
-                console.log("Player disconnected or invalid.");
+                console.log(`❌ Player ${currentPlayer?.playerName} is disconnected.`);
                 return;
             }
         
@@ -490,7 +497,12 @@ const pokerLogic = ( wss ) => {
         
                 currentPlayer.ws.on("message", (data) => {
                     const message = JSON.parse(data);
-                    if (message.playerName !== currentPlayer.playerName) return;
+                    console.log("💬 Received message:", message);
+        
+                    if (message.playerName !== currentPlayer.playerName) {
+                        console.log("❗ Not your turn.");
+                        return;
+                    }
         
                     const action = message.action;
         
@@ -511,31 +523,38 @@ const pokerLogic = ( wss ) => {
         
                     if (action === "call") {
                         if (table.betToBeMade === 0) {
+                            console.log('you cant call ');
                             currentPlayer.ws.send(JSON.stringify({
                                 action: "yourTurn",
                                 currentPlayer: currentPlayer.playerName,
-                                message: "You can't call. Try check, fold, or raise.",
-                                options: ["check", "fold", "raise"]
+                                message: "It's your turn to choose an action.",
+                                options: ["call", "fold", "raise"]
                             }));
                             return;
                         }
+                        console.log('bet round', table.currentBettingRound);
                         handlePlayerAction(tableId, currentPlayer.playerName, "call", message).then(() => {
+                            console.log(`${currentPlayer.playerName} called.`);
                             advanceTurn();
                         });
                     } else if (action === "fold") {
                         handlePlayerAction(tableId, currentPlayer.playerName, "fold", message).then(() => {
+                            console.log(`${currentPlayer.playerName} folded.`);
                             advanceTurn();
                         });
                     } else if (action === "raise") {
                         handlePlayerAction(tableId, currentPlayer.playerName, "raise", message).then(() => {
+                            console.log(`${currentPlayer.playerName} raised.`);
                             advanceTurn();
                         });
                     } else if (action === "check") {
                         if (table.betToBeMade === 0) {
                             handlePlayerAction(tableId, currentPlayer.playerName, "check", message).then(() => {
+                                console.log(`${currentPlayer.playerName} checked.`);
                                 advanceTurn();
                             });
                         } else {
+                            console.log('bet is more than 0');
                             currentPlayer.ws.send(JSON.stringify({
                                 action: "yourTurn",
                                 currentPlayer: currentPlayer.playerName,
@@ -545,25 +564,27 @@ const pokerLogic = ( wss ) => {
                         }
                     }
         
-                    // Betting round checks (გადაიტანე ეს ცალკე ფუნქციაში)
                     const allMoved = table.players.every(p => p.moveIsMade);
                     if (allMoved) {
                         if (table.currentBettingRound === 1) {
+                            console.log("✅ First betting round is over.");
                             table.currentBettingRound++;
                             table.firstBetRound = true;
                             flop(tableId);
                         } else if (table.currentBettingRound === 2) {
+                            console.log('✅ second betting round is over.');
                             table.currentBettingRound++;
                             turn(tableId);
                         } else if (table.currentBettingRound === 3) {
+                            console.log('✅ third betting round is over.');
                             table.currentBettingRound++;
                             river(tableId);
                         } else if (table.currentBettingRound === 4) {
+                            console.log('✅ fourth betting round is over.');
                             showdown(tableId);
                         }
                     }
         
-                    // Winner check
                     const activePlayers = table.players.filter(p => p.active);
                     if (activePlayers.length === 1) {
                         const winner = activePlayers[0];
@@ -572,6 +593,7 @@ const pokerLogic = ( wss ) => {
                 });
             }
         }
+        
         
        
         
