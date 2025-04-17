@@ -580,8 +580,6 @@ const pokerLogic = ( wss ) => {
                         
                         showdown(tableId)
                     }
-
-        
                     // ამოწმებს, თუ დარჩა მხოლოდ ერთი აქტიური მოთამაშე
                     if (table.players.filter(p => p.active).length === 1) {
                         const winner = table.players.find(player => player.active === true);
@@ -591,22 +589,33 @@ const pokerLogic = ( wss ) => {
                 });
             }
         }
-
         function processNextTurn(tableId) {
             const table = tables[tableId];
         
             function nextTurn() {
-                table.currentTurnIndex = (table.currentTurnIndex - 1 + table.players.length) % table.players.length;
+                let found = false;
         
-                if (!table.players[table.currentTurnIndex].active || table.players[table.currentTurnIndex].hasBeenActed) {
-                    setImmediate(nextTurn); // გადართვა შემდეგ მოთამაშეზე ისე, რომ არ დაბლოკოს სერვერი
-                } else {
+                for (let i = 1; i <= table.players.length; i++) {
+                    const nextIndex = (table.currentTurnIndex - i + table.players.length) % table.players.length;
+                    const nextPlayer = table.players[nextIndex];
+        
+                    if (nextPlayer.active && !nextPlayer.hasBeenActed) {
+                        table.currentTurnIndex = nextIndex;
+                        found = true;
+                        break;
+                    }
+                }
+        
+                if (found) {
                     managePlayerSequence(tableId);
+                } else {
+                    console.log("🔁 No valid next player found.");
                 }
             }
         
             setImmediate(nextTurn);
         }
+        
 
          if (check) {
             setTimeout(() => {
