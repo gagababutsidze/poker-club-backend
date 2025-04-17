@@ -521,9 +521,8 @@ const pokerLogic = ( wss ) => {
                         }
                         console.log('bet round' ,table.currentBettingRound);
                         
-                        handlePlayerAction(tableId, currentPlayer.playerName, "call", message).then(() => {
+                        handlePlayerAction(tableId, currentPlayer.playerName, "call", message)
                            managePlayerSequence(tableId)
-                           });;
                         console.log(`${currentPlayer.playerName} called.`);
     
                     } 
