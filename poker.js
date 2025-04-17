@@ -511,8 +511,13 @@ const pokerLogic = ( wss ) => {
                     if (message.action === "call") {
                         if (table.betToBeMade === 0) {
                             console.log('you cant call ');
-                            processNextTurn(tableId)
-                            return
+                            currentPlayer.ws.send(JSON.stringify({
+                                action: "yourTurn",
+                                currentPlayer: currentPlayer.playerName,
+                                message: "It's your turn to choose an action.",
+                                options: ["call", "fold", "raise"]
+                            }));
+                         //    return
                             
                         }
                         console.log('bet round' ,table.currentBettingRound);
