@@ -396,7 +396,7 @@ const pokerLogic = ( wss ) => {
 
 
 
-        async function handlePlayerAction  (tableId, playerName, action, message)  {
+        const handlePlayerAction = (tableId, playerName, action, message) => {
             const tablePlayers = tables[tableId];
           
             
@@ -465,33 +465,36 @@ const pokerLogic = ( wss ) => {
                 return;
             }
         
-            if (table.currentTurnIndex === undefined) {
+            // დავადგენთ, ვინ არის ამჟამინდელი მოთამაშე
+            if (!table.currentTurnIndex ) {
                 table.currentTurnIndex = (table.dealerIndex - 3 + table.players.length) % table.players.length;
             }
-        
-            console.log('dilers indeqsi ' + table.dealerIndex);
+
+            console.log('dilers indeqsi' + table.dealerIndex);
+            
         
             let currentPlayer = table.players[table.currentTurnIndex];
-        
             console.log(`🎲 Current Player: ${currentPlayer}`);
             console.log(`🎲 dealer index: ${table.dealerIndex}`);
+            
             console.log(`👉 Current Turn Index: ${table.currentTurnIndex}`);
             console.log(`🧑‍💻 Active Players: ${table.players.filter(p => !p.moveIsMade).length}`);
         
-            if (!currentPlayer || !currentPlayer.ws) {
-                console.log(`❌ Player ${currentPlayer?.playerName} is disconnected.`);
+            // ვამოწმებთ, არის თუ არა მოთამაშე ონლაინ
+            if (currentPlayer.ws ) {
+                currentPlayer.ws.send(JSON.stringify({
+                    action: "yourTurn",
+                    currentPlayer: currentPlayer.playerName,
+                    message: "It's your turn to choose an action.",
+                    options: ["call", "fold", "raise"]
+                }));
+                console.log(`📢 Notified ${currentPlayer.playerName} of their turn.`);
+            } else {
+                console.log(`❌ Player ${currentPlayer.playerName} is disconnected.`);
                 return;
             }
         
-            currentPlayer.ws.send(JSON.stringify({
-                action: "yourTurn",
-                currentPlayer: currentPlayer.playerName,
-                message: "It's your turn to choose an action.",
-                options: ["call", "fold", "raise", "check"]
-            }));
-        
-            console.log(`📢 Notified ${currentPlayer.playerName} of their turn.`);
-        
+            // ვამატებთ მხოლოდ ერთ ლისენერს
             if (!currentPlayer.listenerAttached) {
                 currentPlayer.listenerAttached = true;
         
@@ -504,133 +507,94 @@ const pokerLogic = ( wss ) => {
                         return;
                     }
         
-                    const action = message.action;
-        
-                    const advanceTurn = () => {
-                        // გადაგვყავს შემდეგ მოთამაშეზე
-                        let nextIndex = table.currentTurnIndex;
-                        for (let i = 1; i <= table.players.length; i++) {
-                            const idx = (table.currentTurnIndex - i + table.players.length) % table.players.length;
-                            const p = table.players[idx];
-                            if (p.active && !p.moveIsMade) {
-                                nextIndex = idx;
-                                break;
-                            }
-                        }
-                        table.currentTurnIndex = nextIndex;
-                        setImmediate(() => managePlayerSequence(tableId));
-                    };
-        
-                    if (action === "call") {
+                    // ვამუშავებთ მოქმედებებს
+                    if (message.action === "call") {
                         if (table.betToBeMade === 0) {
                             console.log('you cant call ');
-                            currentPlayer.ws.send(JSON.stringify({
-                                action: "yourTurn",
-                                currentPlayer: currentPlayer.playerName,
-                                message: "It's your turn to choose an action.",
-                                options: ["call", "fold", "raise"]
-                            }));
-                            return;
+                            processNextTurn(tableId)
+                            return
+                            
                         }
-                        console.log('bet round', table.currentBettingRound);
-                        handlePlayerAction(tableId, currentPlayer.playerName, "call", message).then(() => {
-                            console.log(`${currentPlayer.playerName} called.`);
-                            advanceTurn();
-                        });
-                    } else if (action === "fold") {
-                        handlePlayerAction(tableId, currentPlayer.playerName, "fold", message).then(() => {
-                            console.log(`${currentPlayer.playerName} folded.`);
-                            advanceTurn();
-                        });
-                    } else if (action === "raise") {
-                        handlePlayerAction(tableId, currentPlayer.playerName, "raise", message).then(() => {
-                            console.log(`${currentPlayer.playerName} raised.`);
-                            advanceTurn();
-                        });
-                    } else if (action === "check") {
+                        console.log('bet round' ,table.currentBettingRound);
+                        
+                        handlePlayerAction(tableId, currentPlayer.playerName, "call", message);
+                        console.log(`${currentPlayer.playerName} called.`);
+                        processNextTurn(tableId);
+                    } 
+                    else if (message.action === "fold") {
+                        handlePlayerAction(tableId, currentPlayer.playerName, "fold", message);
+                        console.log(`${currentPlayer.playerName} folded.`);
+                        processNextTurn(tableId);
+                    } 
+                    else if (message.action === "raise") {
+                        handlePlayerAction(tableId, currentPlayer.playerName, "raise", message);
+                        console.log(`${currentPlayer.playerName} raised.`);
+                        processNextTurn(tableId);
+                    }
+
+                    else if (message.action === 'check') {
                         if (table.betToBeMade === 0) {
-                            handlePlayerAction(tableId, currentPlayer.playerName, "check", message).then(() => {
-                                console.log(`${currentPlayer.playerName} checked.`);
-                                advanceTurn();
-                            });
-                        } else {
+                            handlePlayerAction(tableId, currentPlayer.playerName, "check", message);
+                           processNextTurn(tableId)
+                        
+                        }
+                        else{
+
                             console.log('bet is more than 0');
-                            currentPlayer.ws.send(JSON.stringify({
-                                action: "yourTurn",
-                                currentPlayer: currentPlayer.playerName,
-                                message: "You can't check now.",
-                                options: ["call", "fold", "raise"]
-                            }));
+                            
                         }
                     }
-        
-                    const allMoved = table.players.every(p => p.moveIsMade);
-                    if (allMoved) {
-                        if (table.currentBettingRound === 1) {
-                            console.log("✅ First betting round is over.");
-                            table.currentBettingRound++;
-                            table.firstBetRound = true;
-                            flop(tableId);
-                        } else if (table.currentBettingRound === 2) {
-                            console.log('✅ second betting round is over.');
-                            table.currentBettingRound++;
-                            turn(tableId);
-                        } else if (table.currentBettingRound === 3) {
-                            console.log('✅ third betting round is over.');
-                            table.currentBettingRound++;
-                            river(tableId);
-                        } else if (table.currentBettingRound === 4) {
-                            console.log('✅ fourth betting round is over.');
-                            showdown(tableId);
-                        }
+
+                    // ამოწმებს, დასრულდა თუ არა რაუნდი
+                    if (table.players.every(player => player.moveIsMade) && table.currentBettingRound === 1) {
+                        console.log("✅ First betting round is over.");
+                        table.currentBettingRound++
+                        table.firstBetRound = true
+                        flop(tableId)
                     }
+                    else if (table.currentBettingRound === 2 && table.players.every(player => player.moveIsMade)) {
+                        console.log('✅ second betting round is over.');
+                        table.currentBettingRound++
+                        turn(tableId)
+                    }
+                    else if (table.currentBettingRound === 3 && table.players.every(player => player.moveIsMade)) {
+                        console.log('✅ third betting round is over.');
+                        river(tableId)
+                        table.currentBettingRound++
+                        
+                    }
+                    else if (table.currentBettingRound === 4 && table.players.every(player => player.moveIsMade)) {
+                        console.log('✅ fourth betting round is over.');
+                        
+                        showdown(tableId)
+                    }
+
         
-                    const activePlayers = table.players.filter(p => p.active);
-                    if (activePlayers.length === 1) {
-                        const winner = activePlayers[0];
+                    // ამოწმებს, თუ დარჩა მხოლოდ ერთი აქტიური მოთამაშე
+                    if (table.players.filter(p => p.active).length === 1) {
+                        const winner = table.players.find(player => player.active === true);
                         console.log(`🏆 Winner is: ${winner.playerName}`);
+                        return;
                     }
                 });
             }
         }
-        
-        
-       
-        
+
         function processNextTurn(tableId) {
             const table = tables[tableId];
         
-          /*  function nextTurn() {
-                let found = false;
+            function nextTurn() {
+                table.currentTurnIndex = (table.currentTurnIndex - 1 + table.players.length) % table.players.length;
         
-                for (let i = 1; i <= table.players.length; i++) {
-                    const nextIndex = (table.currentTurnIndex - i + table.players.length) % table.players.length;
-                    const nextPlayer = table.players[nextIndex];
-        
-                    if (nextPlayer.active && !nextPlayer.hasBeenActed) {
-                        table.currentTurnIndex = nextIndex;
-                        found = true;
-                        break;
-                    }
-                }
-        
-                if (found) {
-                    managePlayerSequence(tableId);
+                if (!table.players[table.currentTurnIndex].active || table.players[table.currentTurnIndex].hasBeenActed) {
+                    setImmediate(nextTurn); // გადართვა შემდეგ მოთამაშეზე ისე, რომ არ დაბლოკოს სერვერი
                 } else {
-                    console.log("🔁 No valid next player found.");
+                    managePlayerSequence(tableId);
                 }
             }
         
-            setImmediate(nextTurn);*/
-        
-            do {
-                (table.currentTurnIndex - 1 + table.players.length) % table.players.length;
-            } while (!table.players[table.currentTurnIndex].active || table.players[table.currentTurnIndex].moveIsMade);
-
-            managePlayerSequence(tableId)
-        
+            setImmediate(nextTurn);
         }
-        
 
          if (check) {
             setTimeout(() => {
