@@ -474,7 +474,7 @@ const pokerLogic = ( wss ) => {
             
         
             let currentPlayer = table.players[table.currentTurnIndex];
-            console.log(`🎲 Current Player: ${currentPlayer}`);
+            console.log(`🎲 Current Player: ${currentPlayer.playerName}`);
             console.log(`🎲 dealer index: ${table.dealerIndex}`);
             
             console.log(`👉 Current Turn Index: ${table.currentTurnIndex}`);
