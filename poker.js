@@ -586,7 +586,7 @@ const pokerLogic = ( wss ) => {
             function nextTurn() {
                 table.currentTurnIndex = (table.currentTurnIndex - 1 + table.players.length) % table.players.length;
         
-                if (!table.players[table.currentTurnIndex].active || table.players[table.currentTurnIndex].hasBeenActed) {
+                if (!table.players[table.currentTurnIndex].active || table.players[table.currentTurnIndex].moveIsMade) {
                     setImmediate(nextTurn); // გადართვა შემდეგ მოთამაშეზე ისე, რომ არ დაბლოკოს სერვერი
                 } else {
                     managePlayerSequence(tableId);
