@@ -19,18 +19,6 @@ const pokerLogic = ( wss ) => {
  
     function assignTable() {
 
-        const playerNames = new Set();
-
-        /*while (selectedPlayers.length < 4 && activePlayers.length > 0) {
-            const randomIndex = Math.floor(Math.random() * activePlayers.length);
-            const player = activePlayers.splice(randomIndex, 1)[0];
-
-            if (player && player.ws && !playerNames.has(player.playerName)) {
-                selectedPlayers.push(player);
-                playerNames.add(player.playerName);
-            }
-        }*/
-
         if (selectedPlayers.length === 4) {
             const newTableId = uuidv4();
             tables[newTableId] = {
@@ -584,13 +572,16 @@ const pokerLogic = ( wss ) => {
             const table = tables[tableId];
         
             function nextTurn() {
-                table.currentTurnIndex = (table.currentTurnIndex - 1 + table.players.length) % table.players.length;
+                if(!table.players[table.currentTurnIndex].moveIsMade){
+                    table.currentTurnIndex = (table.currentTurnIndex - 1 + table.players.length) % table.players.length;
         
-                if (!table.players[table.currentTurnIndex].active || table.players[table.currentTurnIndex].moveIsMade) {
-                    setImmediate(nextTurn); // გადართვა შემდეგ მოთამაშეზე ისე, რომ არ დაბლოკოს სერვერი
-                } else {
-                    managePlayerSequence(tableId);
+                    if (!table.players[table.currentTurnIndex].active || table.players[table.currentTurnIndex].moveIsMade) {
+                        setImmediate(nextTurn); // გადართვა შემდეგ მოთამაშეზე ისე, რომ არ დაბლოკოს სერვერი
+                    } else {
+                        managePlayerSequence(tableId);
+                    }
                 }
+            
             }
         
             setImmediate(nextTurn);
